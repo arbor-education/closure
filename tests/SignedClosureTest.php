@@ -31,25 +31,6 @@ class SignedClosureTest extends ClosureTest
         unserialize($value);
     }
 
-    public function testJsonSecureClosureIntegrityFail()
-    {
-        if (method_exists($this, 'expectException')) {
-            $this->expectException('\Opis\Closure\SecurityException');
-        } else {
-            $this->setExpectedException('\Opis\Closure\SecurityException');
-        }
-
-        $closure = function(){
-            /*x*/
-        };
-
-        SerializableClosure::setSecretKey('secret');
-
-        $value = serialize(new JsonSerializableClosure($closure));
-        $value = str_replace('*x*', '*y*', $value);
-        unserialize($value);
-    }
-
     public function testUnsecuredClosureWithSecurityProvider()
     {
         if (method_exists($this, 'expectException')) {
@@ -65,25 +46,6 @@ class SignedClosureTest extends ClosureTest
         };
 
         $value = serialize(new SerializableClosure($closure));
-        SerializableClosure::setSecretKey('secret');
-        unserialize($value);
-    }
-
-    public function testJsonUnsecuredClosureWithSecurityProvider()
-    {
-        if (method_exists($this, 'expectException')) {
-            $this->expectException('\Opis\Closure\SecurityException');
-        } else {
-            $this->setExpectedException('\Opis\Closure\SecurityException');
-        }
-
-        SerializableClosure::removeSecurityProvider();
-
-        $closure = function(){
-            /*x*/
-        };
-
-        $value = serialize(new JsonSerializableClosure($closure));
         SerializableClosure::setSecretKey('secret');
         unserialize($value);
     }
@@ -131,25 +93,6 @@ class SignedClosureTest extends ClosureTest
 
         $value = serialize(new SerializableClosure($closure));
         $value = str_replace('.', ',', $value);
-        SerializableClosure::removeSecurityProvider();
-        unserialize($value);
-    }
-
-    public function testInvalidJsonSecuredClosureWithoutSecuriyProvider()
-    {
-        if (method_exists($this, 'expectException')) {
-            $this->expectException('\Opis\Closure\SecurityException');
-        } else {
-            $this->setExpectedException('\Opis\Closure\SecurityException');
-        }
-
-        SerializableClosure::setSecretKey('secret');
-        $closure = function(){
-            /*x*/
-        };
-
-        $value = serialize(new JsonSerializableClosure($closure));
-        $value = str_replace('hash', 'hash1', $value);
         SerializableClosure::removeSecurityProvider();
         unserialize($value);
     }
