@@ -362,10 +362,7 @@ class ObjnObj implements Serializable {
 
         SerializableClosure::enterContext();
 
-        $object = serialize(array(
-            'subtest' => $this->subtest,
-            'func' => SerializableClosure::from($this->func),
-        ));
+        $object = serialize($this->__serialize());
 
         SerializableClosure::exitContext();
 
@@ -375,7 +372,19 @@ class ObjnObj implements Serializable {
     public function unserialize($data) {
 
         $data = unserialize($data);
+        $this->__unserialize($data);
+    }
 
+    public function __serialize(): array
+    {
+        return [
+            'subtest' => $this->subtest,
+            'func' => SerializableClosure::from($this->func),
+        ];
+    }
+
+    public function __unserialize(array $data): void
+    {
         $this->subtest = $data['subtest'];
         $this->func = $data['func']->getClosure();
     }
